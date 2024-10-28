@@ -42,16 +42,17 @@ def validateValues(assignment, equation):
 
 def recursiveAssignment(depth, max_depth, currentTuple, uniqueLetters):
     if depth == max_depth:
-        assignment = dict(zip(uniqueLetters, currentTuple))
-        if validateValues(assignment, problem):
-            return assignment
+        if len(set(currentTuple)) == len(currentTuple):
+            assignment = dict(zip(uniqueLetters, currentTuple))
+            if validateValues(assignment, problem):
+                return assignment
         return None
     
     for i in range(10):
-        if currentTuple.count(i) < 1:
-            result = recursiveAssignment(depth + 1, max_depth, currentTuple + (i,), uniqueLetters)
-            if result is not None:
-                return result
+        # if currentTuple.count(i) < 1:
+        result = recursiveAssignment(depth + 1, max_depth, currentTuple + (i,), uniqueLetters)
+        if result is not None:
+            return result
 
 def solveBruteForce(equation):
     uniqueLetters = extractUniqueLetters(equation)
