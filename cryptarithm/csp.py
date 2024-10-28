@@ -11,15 +11,19 @@ def startingLetters(equation, letters):
     parts = splitEquation(equation)
     return [letters[i] for i in range(len(letters)) if letters[i] in [part[0] for part in parts if part.isalpha()]]
 
+# Mengubah kata menjadi angka berdasarkan assignment
+def wordToNumber(word, assignment):
+    return int(''.join(str(assignment[letter]) for letter in word))
+
 # Cek apakah assignment valid
 def validateValues(assignment, equation):
     operand1, operator, operand2, equals, result = splitEquation(equation)
     
     # Jika semua huruf dalam operand1, operand2, dan result sudah di-assign
     if all(letter in assignment or not letter.isalpha() for letter in operand1 + operand2 + result):
-        num1 = int("".join(str(assignment.get(letter)) for letter in operand1))
-        num2 = int("".join(str(assignment.get(letter)) for letter in operand2))
-        finalRes = int("".join(str(assignment.get(letter)) for letter in result))
+        num1 = wordToNumber(operand1, assignment)
+        num2 = wordToNumber(operand2, assignment)
+        finalRes = wordToNumber(result, assignment)
 
         # print(f"Percobaan: {num1} {operator} {num2} = {finalRes}")
 
@@ -30,7 +34,7 @@ def validateValues(assignment, equation):
         elif(operator == '*'):
             return num1 * num2 == finalRes
         elif(operator == '/'):
-            return num1 / num2 == finalRes
+            return num2 != 0 and num1 / num2 == finalRes
     return False
 
 # SELECT-UNASSIGNED-VARIABLE
@@ -86,7 +90,7 @@ def backtrack(assignment, variables, domains, equation):
     # Tidak ada solusi
     return None
 
-def solve(equation):
+def solveCSP(equation):
     variables = extractUniqueLetters(equation)
 
     # CONSTRAINT: Jumlah huruf unik dalam problem tidak boleh lebih dari 10
@@ -119,11 +123,11 @@ def solve(equation):
     # Jika ada complete assignment yang memenuhi semua constraint
     if assignment:
         print(f"Solusi ditemukan dengan assignment: {assignment}")
-        print(f"Hasil akhir: {''.join(str(assignment.get(letter)) for letter in operand1)} {operator} {''.join(str(assignment.get(letter)) for letter in operand2)} = {''.join(str(assignment.get(letter)) for letter in result)}")
+        print(f"Hasil akhir: {wordToNumber(operand1, assignment)} {operator} {wordToNumber(operand2, assignment)} = {wordToNumber(result, assignment)}\n")
     
     # Tidak ada solusi valid yang ditemukan
     else:
-        print("No valid solution found for the given equation.\n")
+        print("Tidak ada solusi yang ditemukan.\n")
 
 def input_from_user(input_user):
     while True:
@@ -146,4 +150,4 @@ res = input_from_user("Masukkan hasil: ")
 problem = f"{op1} {opt} {op2} = {res}"
 
 if problem:
-    solve(problem)
+    solveCSP(problem)
