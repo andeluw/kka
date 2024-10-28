@@ -1,3 +1,6 @@
+import tracemalloc
+import time
+
 # Split equation menjadi tuple
 def splitEquation(equation):
     return tuple(equation.upper().split())
@@ -129,7 +132,7 @@ def solveCSP(equation):
     else:
         print("Tidak ada solusi yang ditemukan.\n")
 
-def input_from_user(input_user):
+def inputFromUser(input_user):
     while True:
         input_user = input(input_user)
         if input_user.isalpha():
@@ -138,16 +141,23 @@ def input_from_user(input_user):
             print("Silakan masukkan huruf saja.")
 
 # Input User
-op1 = input_from_user("Masukkan operan pertama: ")
-op2 = input_from_user("Masukkan operan kedua: ")
+op1 = inputFromUser("Masukkan operan pertama: ")
+op2 = inputFromUser("Masukkan operan kedua: ")
 while True:
     opt = input("Masukkan operator (+, -, *, /): ")
     if opt in ['+', '-', '*', '/']:
         break
     else:
         print("Operator yang dimasukkan tidak valid.")
-res = input_from_user("Masukkan hasil: ")
+res = inputFromUser("Masukkan hasil: ")
 problem = f"{op1} {opt} {op2} = {res}"
 
 if problem:
+    tracemalloc.start()
+    start_time = time.time()
     solveCSP(problem)
+    end_time = time.time()
+    memory_usage, _ = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+    print(f"Runtime : {end_time - start_time: .4f} seconds")
+    print(f"Memory Usage : {memory_usage / 1024: .2f} KB")
